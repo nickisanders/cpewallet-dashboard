@@ -1,6 +1,19 @@
 'use client'
 
 import Link from 'next/link'
+import {
+    AppBar,
+    Toolbar,
+    Box,
+    Typography,
+    Button,
+    LinearProgress,
+    Container,
+    IconButton,
+    useMediaQuery,
+    useTheme
+} from '@mui/material'
+import { Add as AddIcon } from '@mui/icons-material'
 import UserPill from '../components/UserPill'
 
 type Props = {
@@ -10,48 +23,129 @@ type Props = {
 
 export default function TopNav({ earned, total }: Props) {
     const pct = Math.min(100, Math.round((earned / total) * 100))
+    const theme = useTheme()
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
 
     return (
-        <header className="sticky top-0 z-20 w-full border-b bg-white">
-            <div className="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between gap-4">
-                {/* Left: Brand + primary nav */}
-                <div className="flex items-center gap-6">
-                    <Link href="/dashboard" className="flex items-center gap-2">
-                        <img src="/branding/cpewallet-cropped-logo.png" alt="CPE Wallet" className="h-6 w-auto" />
-                    </Link>
-                    <nav className="hidden md:flex items-center gap-5 text-sm text-gray-700">
-                        <Link href="/dashboard" className="font-medium text-gray-900">Dashboard</Link>
-                        <Link href="/profile" className="hover:text-gray-900">Profile</Link>
-                    </nav>
-                </div>
-
-                {/* Center: progress meter */}
-                <div className="hidden md:flex items-center gap-3 min-w-[320px]">
-                    <div className="w-72">
-                        <div className="flex items-center justify-between text-[11px] text-gray-600 mb-1">
-                            <span>{earned}/{total} TOTAL CPE Credits</span>
-                            <span>{pct}%</span>
-                        </div>
-                        <div className="h-3 rounded-full bg-gray-200 overflow-hidden">
-                            <div
-                                className="h-full rounded-full bg-gradient-to-r from-[#0479BE] to-[#00B8F1] transition-all"
-                                style={{ width: `${pct}%` }}
-                                aria-valuenow={pct}
-                                aria-valuemin={0}
-                                aria-valuemax={100}
-                                role="progressbar"
+        <AppBar position="sticky" elevation={1}>
+            <Container maxWidth="xl">
+                <Toolbar
+                    sx={{
+                        minHeight: '64px !important',
+                        px: { xs: 1, sm: 2 },
+                        gap: 2,
+                        justifyContent: 'space-between'
+                    }}
+                >
+                    {/* Left: Brand + Navigation */}
+                    <Box sx={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                        <Link href="/dashboard" style={{ textDecoration: 'none' }}>
+                            <Box component="img"
+                                src="/branding/cpewallet-cropped-logo.png"
+                                alt="CPE Wallet"
+                                sx={{ height: 24, width: 'auto' }}
                             />
-                        </div>
-                    </div>
-                    <button className="shrink-0 inline-flex items-center gap-2 rounded-md bg-[#0b3b66] text-white text-sm px-3 py-2 hover:opacity-95">
-                        <span className="text-base leading-none">＋</span>
-                        Add CPE
-                    </button>
-                </div>
+                        </Link>
 
-                {/* Right: user pill */}
-                <UserPill />
-            </div>
-        </header>
+                        {!isMobile && (
+                            <Box sx={{ display: 'flex', gap: 2 }}>
+                                <Button
+                                    component={Link}
+                                    href="/dashboard"
+                                    sx={{
+                                        color: 'text.primary',
+                                        fontWeight: 600,
+                                        textTransform: 'none',
+                                        fontSize: '0.875rem'
+                                    }}
+                                >
+                                    Dashboard
+                                </Button>
+                                <Button
+                                    component={Link}
+                                    href="/profile"
+                                    sx={{
+                                        color: 'text.secondary',
+                                        textTransform: 'none',
+                                        fontSize: '0.875rem',
+                                        '&:hover': {
+                                            color: 'text.primary'
+                                        }
+                                    }}
+                                >
+                                    Profile
+                                </Button>
+                            </Box>
+                        )}
+                    </Box>
+
+                    {/* Center: Progress Meter */}
+                    {!isMobile && (
+                        <Box sx={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: 2,
+                            minWidth: 320,
+                            maxWidth: 400,
+                            flex: 1,
+                            justifyContent: 'center'
+                        }}>
+                            <Box sx={{ width: '100%', maxWidth: 280 }}>
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'space-between',
+                                    alignItems: 'center',
+                                    mb: 0.5
+                                }}>
+                                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                                        {earned}/{total} TOTAL CPE Credits
+                                    </Typography>
+                                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>
+                                        {pct}%
+                                    </Typography>
+                                </Box>
+                                <LinearProgress
+                                    variant="determinate"
+                                    value={pct}
+                                    sx={{
+                                        height: 8,
+                                        borderRadius: 4,
+                                        backgroundColor: 'grey.200',
+                                        '& .MuiLinearProgress-bar': {
+                                            borderRadius: 4,
+                                            background: 'linear-gradient(90deg, #0479BE 0%, #00B8F1 100%)'
+                                        }
+                                    }}
+                                />
+                            </Box>
+
+                            <Button
+                                variant="contained"
+                                startIcon={<AddIcon />}
+                                sx={{
+                                    backgroundColor: '#0b3b66',
+                                    color: 'white',
+                                    textTransform: 'none',
+                                    borderRadius: 1,
+                                    px: 2,
+                                    py: 1,
+                                    fontSize: '0.875rem',
+                                    fontWeight: 500,
+                                    whiteSpace: 'nowrap',
+                                    '&:hover': {
+                                        backgroundColor: '#094060',
+                                    }
+                                }}
+                            >
+                                Add CPE
+                            </Button>
+                        </Box>
+                    )}
+
+                    {/* Right: User Pill */}
+                    <UserPill />
+                </Toolbar>
+            </Container>
+        </AppBar>
     )
 }

@@ -1,13 +1,28 @@
 import './globals.css'
-import PrivyProviders from '@/components/PrivyProvider'
+import PrivyProviders from '../components/PrivyProvider'
+import MuiProvider from '../components/MuiProvider'
+import { Montserrat } from 'next/font/google'
 
-export const metadata = { title: 'CPE Wallet' }
+const montserrat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-montserrat'
+})
+
+export const metadata = {
+  title: 'CPE Wallet',
+  icons: {
+    icon: '/favicon.ico',
+  }
+}
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body>
-        <PrivyProviders>{children}</PrivyProviders>
+      <body className={montserrat.variable}>
+        <MuiProvider>
+          <PrivyProviders>{children}</PrivyProviders>
+        </MuiProvider>
       </body>
     </html>
   )

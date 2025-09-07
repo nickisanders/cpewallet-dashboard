@@ -2,6 +2,8 @@
 
 import { useMemo } from 'react'
 import { usePrivy, useLinkAccount } from '@privy-io/react-auth'
+import { Box, Button, Typography, Chip } from '@mui/material'
+import { AccountBalanceWallet, Logout } from '@mui/icons-material'
 
 function short(addr: string) {
     return addr.slice(0, 6) + '…' + addr.slice(-4)
@@ -27,30 +29,70 @@ export default function UserPill() {
     if (!(ready && authenticated) || !user) return null
 
     return (
-        <div className="flex items-center gap-3">
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             {walletAddrs.length > 0 ? (
-                <div className="text-sm text-gray-700">
-                    Connected&nbsp;
-                    <span className="font-medium">{short(walletAddrs[0])}</span>
-                    {walletAddrs.length > 1 && (
-                        <span className="text-gray-500"> +{walletAddrs.length - 1} more</span>
-                    )}
-                </div>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Chip
+                        icon={<AccountBalanceWallet />}
+                        label={
+                            <Box>
+                                <Typography component="span" variant="body2" sx={{ fontWeight: 500 }}>
+                                    {short(walletAddrs[0])}
+                                </Typography>
+                                {walletAddrs.length > 1 && (
+                                    <Typography component="span" variant="caption" color="text.secondary" sx={{ ml: 0.5 }}>
+                                        +{walletAddrs.length - 1} more
+                                    </Typography>
+                                )}
+                            </Box>
+                        }
+                        variant="outlined"
+                        sx={{
+                            backgroundColor: 'success.light',
+                            color: 'success.contrastText',
+                            borderColor: 'success.main',
+                            '& .MuiChip-icon': {
+                                color: 'success.main'
+                            }
+                        }}
+                    />
+                </Box>
             ) : (
-                <button
+                <Button
+                    variant="outlined"
+                    startIcon={<AccountBalanceWallet />}
                     onClick={() => linkWallet()}
-                    className="text-sm px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-50"
+                    sx={{
+                        textTransform: 'none',
+                        fontSize: '0.875rem',
+                        borderColor: 'grey.300',
+                        color: 'text.primary',
+                        '&:hover': {
+                            backgroundColor: 'grey.50',
+                            borderColor: 'grey.400',
+                        }
+                    }}
                 >
                     Link a wallet
-                </button>
+                </Button>
             )}
 
-            <button
+            <Button
+                variant="contained"
+                endIcon={<Logout />}
                 onClick={() => logout()}
-                className="text-sm px-3 py-1 rounded-md bg-gray-900 text-white hover:bg-black"
+                sx={{
+                    backgroundColor: 'grey.900',
+                    color: 'white',
+                    textTransform: 'none',
+                    fontSize: '0.875rem',
+                    '&:hover': {
+                        backgroundColor: 'grey.800',
+                    }
+                }}
             >
                 Logout
-            </button>
-        </div>
+            </Button>
+        </Box>
     )
 }
